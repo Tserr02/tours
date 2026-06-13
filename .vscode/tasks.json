@@ -1,0 +1,54 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "1. Создать виртуальное окружение",
+            "type": "shell",
+            "command": "py -3 -m venv .venv-vscode",
+            "problemMatcher": []
+        },
+        {
+            "label": "2. Установить зависимости",
+            "type": "shell",
+            "command": ".\\.venv-vscode\\Scripts\\python.exe -m pip install --upgrade pip; .\\.venv-vscode\\Scripts\\python.exe -m pip install -r requirements.txt",
+            "problemMatcher": []
+        },
+        {
+            "label": "3. Запустить PostgreSQL",
+            "type": "shell",
+            "command": "docker compose up -d",
+            "problemMatcher": []
+        },
+        {
+            "label": "4. Применить миграции",
+            "type": "shell",
+            "command": ".\\.venv-vscode\\Scripts\\python.exe manage.py migrate",
+            "problemMatcher": []
+        },
+        {
+            "label": "5. Заполнить демо-данные",
+            "type": "shell",
+            "command": ".\\.venv-vscode\\Scripts\\python.exe manage.py seed_demo",
+            "problemMatcher": []
+        },
+        {
+            "label": "6. Создать администратора",
+            "type": "shell",
+            "command": ".\\.venv-vscode\\Scripts\\python.exe manage.py createsuperuser",
+            "problemMatcher": []
+        },
+        {
+            "label": "7. Запустить сайт",
+            "type": "shell",
+            "command": ".\\.venv-vscode\\Scripts\\python.exe manage.py runserver 127.0.0.1:8000",
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "Проверить тесты",
+            "type": "shell",
+            "command": ".\\.venv-vscode\\Scripts\\python.exe manage.py test",
+            "problemMatcher": []
+        }
+    ]
+}

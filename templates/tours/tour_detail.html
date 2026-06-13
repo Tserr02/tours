@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}{{ tour.title }}{% endblock %}
+
+{% block content %}
+<section class="detail-hero">
+    <div>
+        <p class="eyebrow">{{ tour.country.name }} · {{ tour.resort.name }}</p>
+        <h1>{{ tour.title }}</h1>
+        <p>{{ tour.hotel.name }} · {{ tour.hotel.stars }} ★ · рейтинг {{ tour.hotel.rating }}/10</p>
+    </div>
+    <div class="price-box">
+        {% if tour.old_price %}<span>{{ tour.old_price|floatformat:0 }} ₽</span>{% endif %}
+        <strong>{{ tour.price|floatformat:0 }} ₽</strong>
+        <small>{{ tour.start_date|date:"d.m.Y" }}, {{ tour.nights }} ночей</small>
+        <a class="button" href="{% url 'booking_request' tour.slug %}">Оставить заявку</a>
+        {% if user.is_authenticated %}
+            <form action="{% url 'toggle_favorite' tour.slug %}" method="post">
+                {% csrf_token %}
+                <button class="button secondary" type="submit">{% if is_favorite %}Убрать из избранного{% else %}В избранное{% endif %}</button>
+            </form>
+        {% endif %}
+    </div>
+</section>
+
+<section class="gallery">
+    {% for image in tour.images.all %}
+        <img src="{{ image.image_url }}" alt="{{ image.caption|default:tour.title }}">
+    {% empty %}
+        {% if tour.hotel.photo_url %}<img src="{{ tour.hotel.photo_url }}" alt="{{ tour.hotel.name }}">{% endif %}
+    {% endfor %}
+</section>
+
+<section class="content-grid">
+    <article>
+        <h2>Описание</h2>
+        <p>{{ tour.description }}</p>
+        <h2>Отель и удобства</h2>
+        <p>{{ tour.hotel.description }}</p>
+        <p>{{ tour.hotel.amenities }}</p>
+        <h2>Перелет и трансфер</h2>
+        <p>{{ tour.flight_info }}</p>
+        <p>{{ tour.transfer_info }}</p>
+        <p>{% if tour.insurance_included %}Страховка включена в стоимость.{% else %}Страховка оформляется отдельно.{% endif %}</p>
+    </article>
+    <aside class="info-panel">
+        <h2>Параметры тура</h2>
+        <dl>
+            <dt>Питание</dt><dd>{{ tour.get_meal_type_display }}</dd>
+            <dt>Туристы</dt><dd>{{ tour.adults }} взрослых, {{ tour.children }} детей</dd>
+            <dt>Статус</dt><dd>{{ tour.get_status_display }}</dd>
+        </dl>
+    </aside>
+</section>
+
+<section class="section">
+    <h2>Отзывы</h2>
+    <div class="review-list">
+        {% for review in tour.reviews.all %}
+            {% if review.is_published %}
+                <article class="review">
+                    <strong>{{ review.author_name }} · {{ review.rating }}/5</strong>
+                    <p>{{ review.text }}</p>
+                </article>
+            {% endif %}
+        {% empty %}
+            <p class="empty">Пока нет отзывов.</p>
+        {% endfor %}
+    </div>
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'add_review' tour.slug %}" class="simple-form">
+            {% csrf_token %}
+            {% include "tours/_form_fields.html" with form=review_form %}
+            <button class="button" type="submit">Опубликовать отзыв</button>
+        </form>
+    {% endif %}
+</section>
+
+<section class="section muted">
+    <h2>Похожие туры</h2>
+    <div class="card-grid">
+        {% for item in similar_tours %}
+            {% include "tours/_tour_card.html" with tour=item %}
+        {% empty %}
+            <p class="empty">Похожие предложения появятся после наполнения каталога.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Каталог туров{% endblock %}
+
+{% block content %}
+<section class="page-layout">
+    <aside>
+        <h1>Каталог туров</h1>
+        <div class="catalog-filter">
+            {% include "tours/_search_form.html" with form=form %}
+        </div>
+    </aside>
+    <div>
+        <div class="results-head">
+            <span>Найдено: {{ tours|length }}</span>
+        </div>
+        <div class="card-grid search-results-grid">
+            {% for tour in tours %}
+                <article class="tour-card">
+                    <a href="{{ tour.get_absolute_url }}" class="tour-image">
+                        {% if tour.hotel.photo_url %}
+                            <img src="{{ tour.hotel.photo_url }}" alt="{{ tour.hotel.name }}">
+                        {% else %}
+                            {% with image=tour.images.first %}
+                                {% if image %}
+                                    <img src="{{ image.image_url }}" alt="{{ tour.title }}">
+                                {% endif %}
+                            {% endwith %}
+                        {% endif %}
+                    </a>
+                    <div class="tour-card-body">
+                        <div class="card-topline">
+                            <span>{{ tour.country.name }}</span>
+                            <span>{{ tour.hotel.rating }}/10</span>
+                        </div>
+                        <h3><a href="{{ tour.get_absolute_url }}">{{ tour.title }}</a></h3>
+                        <p>{{ tour.hotel.name }} · {{ tour.hotel.stars }} ★ · {{ tour.start_date|date:"d.m.Y" }}</p>
+                        <p class="tour-nights">{{ tour.nights }} ночей</p>
+                        <div class="card-actions">
+                            <strong>{{ tour.price|floatformat:0 }} ₽</strong>
+                            <div class="compact-actions">
+                                {% if user.is_authenticated %}
+                                    <form action="{% url 'toggle_favorite' tour.slug %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                        <button class="icon-button" title="Избранное" type="submit">
+                                            {% if tour.id in favorite_ids %}♥{% else %}♡{% endif %}
+                                        </button>
+                                    </form>
+                                {% endif %}
+                                <a class="button small" href="{% url 'booking_request' tour.slug %}">Заявка</a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            {% empty %}
+                <p class="empty">Туры не найдены. Измените параметры поиска или отправьте заявку менеджеру.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

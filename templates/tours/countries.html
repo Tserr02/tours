@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Страны{% endblock %}
+
+{% block content %}
+<section class="section">
+    <h1>Страны</h1>
+    <div class="country-grid large">
+        {% for country in countries %}
+            <a class="country-tile" href="{{ country.get_absolute_url }}">
+                {% if country.photo_url %}<img src="{{ country.photo_url }}" alt="{{ country.name }}">{% endif %}
+                <span>{{ country.name }}</span>
+                <small>{{ country.short_description }}</small>
+            </a>
+        {% empty %}
+            <p class="empty">Справочник стран пока пуст.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

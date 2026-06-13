@@ -1,0 +1,25 @@
+<article class="tour-card">
+    <a href="{{ tour.get_absolute_url }}" class="tour-image">
+        {% with image=tour.images.first %}
+            {% if image %}
+                <img src="{{ image.image_url }}" alt="{{ tour.title }}">
+            {% elif tour.hotel.photo_url %}
+                <img src="{{ tour.hotel.photo_url }}" alt="{{ tour.hotel.name }}">
+            {% else %}
+                <div class="image-placeholder">{{ tour.country.name }}</div>
+            {% endif %}
+        {% endwith %}
+    </a>
+    <div class="tour-card-body">
+        <div class="card-topline">
+            <span>{{ tour.country.name }}, {{ tour.resort.name }}</span>
+            <span>{{ tour.hotel.stars }} ★</span>
+        </div>
+        <h3><a href="{{ tour.get_absolute_url }}">{{ tour.title }}</a></h3>
+        <p>{{ tour.hotel.name }} · {{ tour.start_date|date:"d.m.Y" }} · {{ tour.nights }} ночей · {{ tour.get_meal_type_display }}</p>
+        <div class="card-actions">
+            <strong>{{ tour.price|floatformat:0 }} ₽</strong>
+            <a class="button small" href="{% url 'booking_request' tour.slug %}">Заявка</a>
+        </div>
+    </div>
+</article>

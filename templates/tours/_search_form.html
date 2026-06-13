@@ -1,0 +1,4 @@
+<form class="search-panel" method="get" action="{% url 'tour_list' %}">
+    {% include "tours/_form_fields.html" with form=form %}
+    <button class="button" type="submit">Найти туры</button>
+</form>

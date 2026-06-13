@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ country.name }}{% endblock %}
+
+{% block content %}
+<section class="country-detail">
+    {% if country.photo_url %}<img src="{{ country.photo_url }}" alt="{{ country.name }}">{% endif %}
+    <div>
+        <h1>{{ country.name }}</h1>
+        <p>{{ country.description }}</p>
+    </div>
+</section>
+
+<section class="content-grid">
+    <article>
+        <h2>Визовые требования</h2>
+        <p>{{ country.visa_requirements }}</p>
+        <h2>Климат и сезон</h2>
+        <p>{{ country.climate }}</p>
+        <p>{{ country.best_season }}</p>
+        <h2>Достопримечательности</h2>
+        <p>{{ country.attractions }}</p>
+    </article>
+    <aside class="info-panel">
+        <h2>Курорты</h2>
+        <ul class="plain-list">
+            {% for resort in country.resorts.all %}
+                <li>{{ resort.name }}</li>
+            {% empty %}
+                <li>Информация о курортах загружается.</li>
+            {% endfor %}
+        </ul>
+    </aside>
+</section>
+
+<section class="section">
+    <h2>Туры в {{ country.name }}</h2>
+    <div class="card-grid">
+        {% for tour in tours %}
+            {% include "tours/_tour_card.html" with tour=tour %}
+        {% empty %}
+            <p class="empty">Предложения по стране пока не опубликованы.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

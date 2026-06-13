@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Поиск туров{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <p class="eyebrow">Онлайн-подбор и бронирование</p>
+        <h1>Найдите тур под даты, бюджет и формат отдыха</h1>
+        <p>Каталог направлений, отелей, горящих предложений и заявок для менеджера турагентства.</p>
+    </div>
+    {% include "tours/_search_form.html" with form=form %}
+</section>
+
+<section class="section">
+    <div class="section-heading">
+        <h2>Специальные предложения</h2>
+        <a href="{% url 'tour_list' %}">Все туры</a>
+    </div>
+    <div class="card-grid">
+        {% for tour in featured_tours %}
+            {% include "tours/_tour_card.html" with tour=tour %}
+        {% empty %}
+            <p class="empty">Пока нет опубликованных туров. Добавьте предложения через административную панель.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="section muted">
+    <div class="section-heading">
+        <h2>Популярные страны</h2>
+        <a href="{% url 'countries' %}">Смотреть страны</a>
+    </div>
+    <div class="country-grid">
+        {% for country in countries %}
+            <a class="country-tile" href="{{ country.get_absolute_url }}">
+                {% if country.photo_url %}<img src="{{ country.photo_url }}" alt="{{ country.name }}">{% endif %}
+                <span>{{ country.name }}</span>
+                <small>{{ country.tour_count }} туров</small>
+            </a>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="subscribe">
+    <div>
+        <h2>Рассылка спецпредложений</h2>
+        <p>Горящие туры, сезонные подборки и новости направлений.</p>
+    </div>
+    <form method="post" action="{% url 'subscribe' %}" class="subscribe-form">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        {{ subscriber_form.email }}
+        <button class="button" type="submit">Подписаться</button>
+    </form>
+</section>
+{% endblock %}

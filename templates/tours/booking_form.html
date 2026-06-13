@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Заявка на тур{% endblock %}
+
+{% block content %}
+<section class="narrow-page">
+    <h1>Заявка на тур</h1>
+    <p class="lead">{{ tour.title }} · {{ tour.start_date|date:"d.m.Y" }} · {{ tour.price|floatformat:0 }} ₽</p>
+    <form method="post" class="simple-form">
+        {% csrf_token %}
+        {% include "tours/_form_fields.html" with form=form %}
+        <button class="button" type="submit">Отправить заявку</button>
+    </form>
+</section>
+{% endblock %}

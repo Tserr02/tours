@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Избранное{% endblock %}
+
+{% block content %}
+<section class="section">
+    <h1>Избранное</h1>
+    <div class="card-grid favorite-grid">
+        {% for item in favorites %}
+            {% include "tours/_tour_card.html" with tour=item.tour %}
+        {% empty %}
+            <p class="empty">В избранном пока нет туров.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
